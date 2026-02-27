@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ challenge.title }}</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 30px;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .editor-box {
+            background: #1e1e1e;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 400px;
+            background: #1e1e1e;
+            color: #ffffff;
+            font-family: monospace;
+            font-size: 14px;
+            border: none;
+            outline: none;
+            resize: vertical;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        /* SUCCESS STYLE */
+        .success {
+            color: #155724;
+            background: linear-gradient(45deg, #d4edda, #c3f3d4);
+            border: 2px solid #28a745;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        /* ERROR STYLE */
+        .error {
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 2px solid #dc3545;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            margin-top: 30px;
+            display: flex;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .nav-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .next-btn {
+            margin-left: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- 🔥 MASTER FLAG AT TOP -->
+{% if master_flag %}
+    <div class="success" style="margin-bottom:20px; font-size:22px;">
+        🎉 Congratulations! MASTER FLAG: {{ master_flag }}
+    </div>
+{% endif %}
+
+<h2>{{ challenge.title }}</h2>
+<h3>{{ challenge.description }}</h3>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <div class="editor-box">
+        <textarea name="code">{{ challenge.buggy_code }}</textarea>
+    </div>
+
+    <button type="submit">Submit Fix</button>
+</form>
+
+{% if result %}
+<div class="result-box">
+    {% if "Correct" in result %}
+        <div class="success">{{ result }}</div>
+    {% else %}
+        <div class="error">{{ result }}</div>
+    {% endif %}
+</div>
+{% endif %}
+
+<div class="nav-buttons">
+
+    {% if prev_challenge %}
+        <a class="nav-btn" href="{% url 'challenge' prev_challenge.id %}">
+            ⬅ Previous
+        </a>
+    {% endif %}
+
+    {% if next_challenge %}
+        <a class="nav-btn next-btn" href="{% url 'challenge' next_challenge.id %}">
+            Next ➡
+        </a>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
