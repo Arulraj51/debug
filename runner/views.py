@@ -16,9 +16,9 @@ def challenge_view(request, id):
     prev_challenge = Challenge.objects.filter(id__lt=challenge.id).order_by('-id').first()
     next_challenge = Challenge.objects.filter(id__gt=challenge.id).order_by('id').first()
 
-    # 🔥 CLEAR EVERYTHING ON REFRESH (GET request)
-    if request.method == "GET":
-        request.session.flush()   # destroys entire session
+    # Initialize solved list in session
+    if "solved" not in request.session:
+        request.session["solved"] = []
 
     if request.method == "POST":
         user_code = request.POST.get("code")
@@ -44,10 +44,17 @@ def challenge_view(request, id):
             if output_lines == expected_lines:
                 result_message = "Correct! ✅"
 
-                # Only show master flag if last challenge
-                last_challenge = Challenge.objects.order_by('-id').first()
-                if challenge == last_challenge:
+                # Add challenge to solved list
+                solved = request.session["solved"]
+                if challenge.id not in solved:
+                    solved.append(challenge.id)
+                    request.session["solved"] = solved
+
+                # Check if ALL challenges solved
+                total = Challenge.objects.count()
+                if len(solved) == total:
                     master_flag = settings.MASTER_FLAG
+
             else:
                 result_message = "Wrong answer. Try again!"
 
