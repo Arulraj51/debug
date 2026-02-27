@@ -110,16 +110,16 @@
 <body>
 
 <!-- 🔥 MASTER FLAG AT TOP -->
+{% if result %}
 {% if master_flag %}
     <div class="success" style="margin-bottom:20px; font-size:22px;">
-        {% if result %}
 
         🎉 Congratulations! MASTER FLAG: {{ master_flag }}
-        {% endif %}
+        
 
     </div>
 {% endif %}
-
+{% endif %}
 <h2>{{ challenge.title }}</h2>
 <h3>{{ challenge.description }}</h3>
 
