@@ -44,13 +44,9 @@
     <h1>🔥 Debug Battle 2026 🔥</h1>
     <p>Test your logical debugging skills and win exciting prizes!</p>
 
-    <a href="{% url 'index' %}">
+<a href="{% url 'challenge' 1 %}">
     <button class="start-btn">Start Challenge</button>
 </a>
-<script>
-    setTimeout(function() {
-        window.location.href = "{% url 'challenge' 1 %}";
-    }, 500);
-</script>
+
 </body>
 </html>
