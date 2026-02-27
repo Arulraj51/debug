@@ -54,12 +54,14 @@ def challenge_view(request, id):
 
     # ✅ Check if ALL challenges solved
     if request.user.is_authenticated:
+
         total = Challenge.objects.count()
         solved = SolvedChallenge.objects.filter(user=request.user).count()
 
-        if total > 0 and total == solved:
-            master_flag = settings.MASTER_FLAG
+        last_challenge = Challenge.objects.order_by('-id').first()
 
+        if challenge == last_challenge and total > 0 and total == solved:
+            master_flag = settings.MASTER_FLAG
     return render(request, "runner/challenge.html", {
         "challenge": challenge,
         "result": result_message,
