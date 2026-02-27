@@ -23,11 +23,7 @@ def challenge_view(request, id):
     if "solved_count" not in request.session:
         request.session["solved_count"] = 0
 
-    # 🔄 RESET BUTTON
-    if request.method == "POST" and "reset" in request.POST:
-        request.session["solved_list"] = []
-        request.session["solved_count"] = 0
-        return redirect("challenge", id=1)
+
 
     if request.method == "POST" and "code" in request.POST:
         user_code = request.POST.get("code")
@@ -80,5 +76,10 @@ def challenge_view(request, id):
     })
 
 
+
 def index(request):
+    # 🔄 Reset progress whenever Start page is opened
+    request.session["solved_list"] = []
+    request.session["solved_count"] = 0
+
     return render(request, 'runner/index.html')
