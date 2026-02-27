@@ -31,18 +31,19 @@ def challenge_view(request, id):
             output = result.stdout.strip()
             expected = challenge.expected_output.strip()
 
-            # Compare line by line
+            # Compare line by line (safe compare)
             output_lines = [line.strip() for line in output.splitlines()]
             expected_lines = [line.strip() for line in expected.splitlines()]
 
             if output_lines == expected_lines:
                 result_message = "Correct! ✅"
 
-                # Save solved challenge (no login check)
-                SolvedChallenge.objects.get_or_create(
-                    user=request.user,
-                    challenge=challenge
-                )
+                # Save solved challenge
+                if request.user.is_authenticated:
+                    SolvedChallenge.objects.get_or_create(
+                        user=request.user,
+                        challenge=challenge
+                    )
             else:
                 result_message = "Wrong answer. Try again!"
 
@@ -51,13 +52,16 @@ def challenge_view(request, id):
         except Exception as e:
             result_message = f"Error: {str(e)}"
 
-    # ✅ Check if ALL challenges solved (no login check)
-    total = Challenge.objects.count()
-    solved = SolvedChallenge.objects.filter(user=request.user).count()
+    # ✅ Check if ALL challenges solved
+    if request.user.is_authenticated:
 
-    if total > 0 and total == solved:
-        master_flag = settings.MASTER_FLAG
+        total = Challenge.objects.count()
+        solved = SolvedChallenge.objects.filter(user=request.user).count()
 
+        last_challenge = Challenge.objects.order_by('-id').first()
+
+        if challenge == last_challenge and total > 0 and total == solved:
+            master_flag = settings.MASTER_FLAG
     return render(request, "runner/challenge.html", {
         "challenge": challenge,
         "result": result_message,
