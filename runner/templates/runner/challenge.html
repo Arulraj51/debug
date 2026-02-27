@@ -112,7 +112,11 @@
 <!-- 🔥 MASTER FLAG AT TOP -->
 {% if master_flag %}
     <div class="success" style="margin-bottom:20px; font-size:22px;">
+        {% if result %}
+
         🎉 Congratulations! MASTER FLAG: {{ master_flag }}
+        {% endif %}
+
     </div>
 {% endif %}
 
@@ -123,12 +127,7 @@
     {% csrf_token %}
 
     <div class="editor-box">
-
-        <textarea name="code">
-{% if result %}
-{{ challenge.buggy_code }}
-{% endif %}
-</textarea>
+        <textarea name="code">{{ challenge.buggy_code }}</textarea>
     </div>
 
     <button type="submit">Submit Fix</button>
